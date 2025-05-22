@@ -1,3 +1,4 @@
+from typing import Dict, Any, Deque
 import torch
 from collections import deque
 from transformers import (TrainerCallback, TrainerControl, TrainerState, TrainingArguments, PreTrainedModel,
@@ -12,7 +13,7 @@ class LoggingCallback(TrainerCallback):
     """
 
     def __init__(self, prompt: str, tokenizer: PreTrainedTokenizer, dataset: DTDataset,
-                 window: int = 100, gen_kwargs: dict | None = None, prompt_logging: bool = False,
+                 window: int = 100, gen_kwargs: Dict[str, Any] | None = None, prompt_logging: bool = False,
                  prompt_logging_frequency: int = 1) -> None:
         """
         Initializes the callback.
@@ -30,7 +31,7 @@ class LoggingCallback(TrainerCallback):
         self.window = window
         self.dataset = dataset
         self.prompt_logging = prompt_logging
-        self.losses = deque(maxlen=window)
+        self.losses: Deque[float] = deque(maxlen=window)
         self.gen_kwargs = gen_kwargs or {constants.GENERAL.MAX_NEW_TOKENS: 64}
         self.prompt_logging_frequency = prompt_logging_frequency
 

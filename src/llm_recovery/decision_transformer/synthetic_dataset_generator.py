@@ -29,7 +29,7 @@ class SyntheticDatasetGenerator:
             seq.append(f"{constants.DECISION_TRANSFORMER.OBSERVATION_OPEN_DELIMITER}{s}"
                        f"{constants.DECISION_TRANSFORMER.ACTION_OPEN_DELIMITER}{a}"
                        f"{constants.DECISION_TRANSFORMER.RTG_OPEN_DELIMITER}{r}")
-        seq.append({constants.DECISION_TRANSFORMER.SEQUENCE_END})
+        seq.append(constants.DECISION_TRANSFORMER.SEQUENCE_END)
         return " ".join(seq)
 
     @staticmethod

@@ -1,3 +1,4 @@
+from typing import List, Tuple
 import random
 import math
 import json
@@ -5,21 +6,7 @@ from csle_common.metastore.metastore_facade import MetastoreFacade
 import llm_recovery.constants.constants as constants
 
 if __name__ == '__main__':
-    with open('../exploits/sql_injection_exploit.sh', 'r', encoding='utf-8') as f:
-        sql_injection_exploit = f.read()
-    with open('../exploits/cve_2010_0426_exploit.sh', 'r', encoding='utf-8') as f:
-        cve_2010_0426_exploit = f.read()
-    with open('../exploits/cve_2015_3306_exploit.py', 'r', encoding='utf-8') as f:
-        cve_2015_3306_exploit = f.read()
-    with open('../exploits/cve_2015_5602_exploit.sh', 'r', encoding='utf-8') as f:
-        cve_2015_5602_exploit = f.read()
-    with open('../exploits/cve_2016_10033_exploit.sh', 'r', encoding='utf-8') as f:
-        cve_2016_10033_exploit = f.read()
-    with open('../exploits/samba_exploit.py', 'r', encoding='utf-8') as f:
-        samba_exploit = f.read()
-    with open('../exploits/cve_2015_1427_exploit.sh', 'r', encoding='utf-8') as f:
-        cve_2015_1427_exploit = f.read()
-    hosts_and_effective_recovery_actions = \
+    hosts_and_effective_recovery_actions: List[Tuple[str, List[str]]] = \
         [
             ("IPs=15.9.1.254 OS=Unknown Services/Ports=Unknown", []),
             ("IPs=15.9.2.79 OS=Ubuntu 14 Services/Ports=SSH:22/FTP:21/MongoDB:27017/Teamspeak3:30033/Tomcat:8080", []),
@@ -72,55 +59,6 @@ if __name__ == '__main__':
             ("IPS=15.9.8.24 OS=Debian 10.2 Services/Ports=SSH:22/HTTP:80", []),
             ("IPs=15.9.8.25 OS=Debian 10.2 Services/Ports=SSH:22", [])
         ]
-    attacker_actions = [
-        "The attacker conducted a ping scan on the public network "
-        "with the following command: 'sudo nmap -sP --min-rate 100000 --max-retries 1 -T5 -n' on the subnetworks "
-        "15.9.1.0/24 and 15.9.2.0/24."
-        "Through this scan, it discovered the following IPs: 15.9.2.2, 15.9.2.3, 15.9.2.4, 15.9.2.5, 15.9.2.6, 15.9.2.8, "
-        "15.9.2.9, 15.9.1.10, 15.9.2.10, 15.9.2.21, 15.9.2.79, 15.9.2.178, 15.9.1.254",
-        "The attacker executed the Sambacry exploit (CVE-2017-7494) on the host with IP 15.9.2.3. It used the following command: "
-        "sudo /root/miniconda3/envs/samba/bin/python /samba_exploit.py -e /libbindshell-samba.so -s data -r "
-        f"/data/libbindshell-samba.so -u sambacry -p nosambanocry -P 6699 -t 15.9.2.3, the command was  executed "
-        f"from its original host outside of the infrastructure. This is the samba_exploit.py: {samba_exploit}. "
-        f"The exploit was successful, which gave the attacker shell access to 15.9.2.3.",
-        "The attacker logged in to node 15.9.2.3",
-        "The attacker installed pentest tools on 15.9.2.3 by running the command 'sudo apt-get -y install nmap ssh git unzip "
-        "lftpcd /;sudo wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip "
-        "&& sudo unzip -o SecList.zip && sudo rm -f SecList.zip && sudo mv SecLists-master /SecLists'",
-        "The attacker did a ping scan on the subnetwork 15.9.4.0/24 by running the following command from 15.9.2.3: "
-        "sudo nmap -sP --min-rate 100000 --max-retries 1 -T5 -n. Through this scan, the attacker discovered the "
-        "following IP: 15.9.4.74.",
-        f"The attacker executed a SQL injection exploit on 15.9.4.74, this is the attack script: {sql_injection_exploit}, "
-        f"the script was executed from 15.9.2.3, and was successful, which gave the attacker shell access to 15.9.4.74.",
-        "The attacker logged in to node 15.9.4.74.",
-        "The attacker installed pentest tools on 15.9.4.74 by running the command 'sudo apt-get -y install nmap ssh git unzip "
-        "lftpcd /;sudo wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip "
-        "&& sudo unzip -o SecList.zip && sudo rm -f SecList.zip && sudo mv SecLists-master /SecLists'",
-        "The attacker did a ping scan on the subnetwork 15.9.5.0/24 by running the following command from 15.9.4.74:"
-        "sudo nmap -sP --min-rate 100000 --max-retries 1 -T5 -n. Through this scan, the attacker discovered "
-        "the following IPs: 15.9.5.101, 15.9.5.62",
-        "The attacker executed a CVE-2015-1427 exploit on 15.9.5.62 by running the following command from 15.9.4.74: "
-        f"/cve_2015_1427_exploit.sh 15.9.5.62:9200, the content of this exploit script it: {cve_2015_1427_exploit}. "
-        f"The exploit was succcessful, which gave the attacker shell access to 15.9.5.62.",
-        "The attacker logged in to node 15.9.5.62.",
-        "The attacker installed pentest tools on 15.9.5.62 by running the command 'sudo apt-get -y install nmap ssh git unzip "
-        "lftpcd /;sudo wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip "
-        "&& sudo unzip -o SecList.zip && sudo rm -f SecList.zip && sudo mv SecLists-master /SecLists'",
-        "The attacker did a ping scan on the subnetworks 15.9.7.0/24 and 15.9.6.0/24 by running the following command from 15.9.5.62: "
-        "sudo nmap -sP --min-rate 100000 --max-retries 1 -T5 -n. Through this scan, the attacker discovered the "
-        "following IPs: 15.9.7.101, 15.9.6.7, 15.9.7.15, 15.9.7.16, 15.9.7.17, 15.9.7.18",
-        "The attacker executed the Sambacry exploit (CVE-2017-7494) on the host with IP 15.9.6.7. It used the following command: "
-        "sudo /root/miniconda3/envs/samba/bin/python /samba_exploit.py -e /libbindshell-samba.so -s data -r "
-        f"/data/libbindshell-samba.so -u sambacry -p nosambanocry -P 6699 -t 15.9.6.7, the command was executed "
-        f"from host 15.9.5.62. This is the samba_exploit.py: {samba_exploit}. "
-        f"The exploit was successful, which gave the attacker shell access to 15.9.6.7.",
-        "The attacker logged in to node 15.9.6.7.",
-        "The attacker installed pentest tools on 15.9.6.7 by running the command 'sudo apt-get -y install nmap ssh git unzip "
-        "lftpcd /;sudo wget -c https://github.com/danielmiessler/SecLists/archive/master.zip -O SecList.zip "
-        "&& sudo unzip -o SecList.zip && sudo rm -f SecList.zip && sudo mv SecLists-master /SecLists'",
-        "The attacker did a ping scan on the subnetwork 15.9.8.0/24 by running the following command from 15.9.6.7: "
-        "sudo nmap -sP --min-rate 100000 --max-retries 1 -T5 -n."
-    ]
 
     recovery_actions_and_costs = [
         ("Wait", 0),
@@ -179,7 +117,7 @@ if __name__ == '__main__':
     recovery_actions = [x[0] for x in recovery_actions_and_costs]
     recovery_costs = [x[1] for x in recovery_actions_and_costs]
     hosts = [x[0] for x in hosts_and_effective_recovery_actions]
-    effective_recovery_actions = [x[1] for x in hosts_and_effective_recovery_actions]
+    effective_recovery_actions: List[List[str]] = [list(x[1]) for x in hosts_and_effective_recovery_actions]
     traces = [MetastoreFacade.get_emulation_trace(id=1)]
     # traces = MetastoreFacade.list_emulation_traces()
     episodes = []
@@ -198,7 +136,7 @@ if __name__ == '__main__':
                 recovery_action_cost = recovery_costs[recovery_action_idx]
                 if recovery_action in effective_recovery_actions[recovery_target_idx]:
                     state[recovery_target_idx] = 0
-                if attack_state != -1 and attack_state <=15:
+                if attack_state != -1 and attack_state <= 15:
                     attack_state += 1
                 if attack_state == -1 and trace.attacker_actions[i].name != "Continue":
                     attack_state = 0
@@ -210,7 +148,7 @@ if __name__ == '__main__':
                     state[12] = 1
                 if attack_state == 13:
                     state[7] = 1
-                cost = math.pow(5*sum(state), 2) + recovery_action_cost
+                cost = math.pow(5 * sum(state), 2) + recovery_action_cost
                 actions.append(recovery_action + f" on target host {hosts[recovery_target_idx]}")
                 rewards.append(-cost)
                 observations.append(str(trace.defender_observation_states[i].snort_ids_alert_counters.total_alerts))
