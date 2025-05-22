@@ -1,6 +1,7 @@
 from typing import List, Dict, Any, Union
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizerFast
+import llm_recovery.constants.constants as constants
 import torch
 
 
@@ -34,23 +35,24 @@ class DTDataset(Dataset[Dict[str, torch.Tensor]]):
         """
         sample = self.samples[i]
         # Get token ids as PyTorch tensors (pt) with the attention masks.
-        tokenized_input_sample = self.tokenizer(sample, return_tensors="pt")
-        return {"input_ids": tokenized_input_sample.input_ids[0],
-                "attention_mask": tokenized_input_sample.attention_mask[0]}
+        tokenized_input_sample = self.tokenizer(sample, return_tensors=constants.GENERAL.PYTORCH)
+        return {constants.GENERAL.INPUT_IDS: tokenized_input_sample.input_ids[0],
+                constants.GENERAL.ATTENTION_MASK: tokenized_input_sample.attention_mask[0]}
 
     def collate(self, batch: List[Any]) -> Dict[str, Union[List[Any], torch.Tensor]]:
         """
         Takes a batch of tokenized samples, pads them so they have the same length, and  returns a dictionary of
         input_ids (tokenized ids), attention_mask (tokenized mask), and labels, which can be used for supervised
-        fine tuning.
+        fine-tuning.
 
         :param batch: the batch of tokenized samples
         :return: the dictionary with input ids, attention mask, and labels.
         """
-        ids = [b["input_ids"] for b in batch]
-        mask = [b["attention_mask"] for b in batch]
+        ids = [b[constants.GENERAL.INPUT_IDS] for b in batch]
+        mask = [b[constants.GENERAL.ATTENTION_MASK] for b in batch]
         ids_tensor = torch.nn.utils.rnn.pad_sequence(ids, batch_first=True,
                                                      padding_value=self.tokenizer.pad_token_id)
         mask_tensor = torch.nn.utils.rnn.pad_sequence(mask, batch_first=True, padding_value=0)
         labels = ids_tensor.clone()
-        return {"input_ids": ids_tensor, "attention_mask": mask_tensor, "labels": labels}
+        return {constants.GENERAL.INPUT_IDS: ids_tensor, constants.GENERAL.ATTENTION_MASK: mask_tensor,
+                constants.GENERAL.LABELS: labels}
