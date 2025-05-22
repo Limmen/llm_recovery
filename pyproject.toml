@@ -1,0 +1,82 @@
+[project]
+name = "llm_recovery"
+description = "Attack recovery support system using an LLM"
+dynamic = ["version", "authors", "requires-python"]
+license = { file = "LICENSE.md" }
+readme = "README.md"
+keywords = ["Reinforcement-Learning", "Cyber-Security", "Markov-Games", "Markov-Decision-Processes",
+    "Large-Language-Model"]
+maintainers = [
+    { name = "Kim Hammar", email = "kimham@kth.se" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Intended Audience :: Science/Research"
+]
+dependencies = [
+    "torch>=2.3.0",
+    "transformers>=4.52.1",
+    "peft>=0.15.2"
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=6.0",
+    "pytest-cov>=2.0",
+    "pytest-mock>=3.6.0",
+    "pytest-grpc>=0.8.0",
+    "grpcio>=1.69.0",
+    "grpcio-tools>=1.69.0",
+    "mypy>=1.4.1",
+    "mypy-extensions>=1.0.0",
+    "mypy-protobuf>=3.5.0",
+    "types-PyYAML>=6.0.12.11",
+    "types-paramiko>=3.2.0.0",
+    "types-protobuf>=4.23.0.3",
+    "types-requests>=2.31.0.1",
+    "types-urllib3>=1.26.25.13",
+    "flake8>=6.1.0",
+    "flake8-rst-docstrings>=0.3.0",
+    "tox>=4.24.1",
+    "sphinx>=5.3.0",
+    "sphinxcontrib-napoleon>=0.7",
+    "sphinx-rtd-theme>=1.1.1",
+    "twine>=6.1.0",
+    "build>=0.10.0"
+]
+
+[project.urls]
+"Source" = "https://github.com/Limmen/llm_recovery"
+
+[build-system]
+requires = ["setuptools==75.7.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+addopts = "--cov=llm_recovery -p no:warnings"
+testpaths = [
+    "tests",
+]
+log_cli = 1
+log_cli_level = "INFO"
+log_cli_format = "%(asctime)s [%(levelname)8s] %(message)s (%(filename)s:%(lineno)s)"
+log_cli_date_format = "%Y-%m-%d %H:%M:%S"
+
+[tool.mypy]
+mypy_path = "src"
+check_untyped_defs = true
+disallow_any_generics = true
+ignore_missing_imports = true
+no_implicit_optional = true
+show_error_codes = true
+strict_equality = true
+warn_redundant_casts = true
+warn_return_any = true
+warn_unreachable = true
+warn_unused_configs = true
+no_implicit_reexport = true

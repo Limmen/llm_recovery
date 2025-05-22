@@ -1,0 +1,56 @@
+from typing import List, Dict
+from torch.utils.data import Dataset
+from transformers import PreTrainedTokenizerFast
+import torch
+
+
+class DTDataset(Dataset):
+    """
+    A torch dataset of synthetic data
+    """
+
+    def __init__(self, samples: List["str"], tokenizer: PreTrainedTokenizerFast):
+        """
+        Initializes the dataset with a given list of samples.
+
+        :param samples: the list of data samples
+        :param tokenizer: the LLM tokenizer
+        """
+        self.samples = samples
+        self.tokenizer = tokenizer
+
+    def __len__(self):
+        """
+        :return: The length of the dataset
+        """
+        return len(self.samples)
+
+    def __getitem__(self, i):
+        """
+        Retrieves the ith data sample in tokenized form
+
+        :param i: the index of the data sample
+        :return: a dictionary with input ids (the token ids and an attention mask)
+        """
+        sample = self.samples[i]
+        # Get token ids as PyTorch tensors (pt) with the attention masks.
+        tokenized_input_sample = self.tokenizer(sample, return_tensors="pt")
+        return {"input_ids": tokenized_input_sample.input_ids[0],
+                "attention_mask": tokenized_input_sample.attention_mask[0]}
+
+    def collate(self, batch) -> Dict[str, torch.Tensor]:
+        """
+        Takes a batch of tokenized samples, pads them so they have the same length, and  returns a dictionary of
+        input_ids (tokenized ids), attention_mask (tokenized mask), and labels, which can be used for supervised
+        fine tuning.
+
+        :param batch: the batch of tokenized samples
+        :return: the dictionary with input ids, attention mask, and labels.
+        """
+        ids = [b["input_ids"] for b in batch]
+        mask = [b["attention_mask"] for b in batch]
+        ids = torch.nn.utils.rnn.pad_sequence(ids, batch_first=True,
+                                              padding_value=self.tokenizer.pad_token_id)
+        mask = torch.nn.utils.rnn.pad_sequence(mask, batch_first=True, padding_value=0)
+        labels = ids.clone()
+        return {"input_ids": ids, "attention_mask": mask, "labels": labels}
