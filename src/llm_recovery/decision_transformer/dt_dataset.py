@@ -1,10 +1,10 @@
-from typing import List, Dict
+from typing import List, Dict, Any, Union
 from torch.utils.data import Dataset
 from transformers import PreTrainedTokenizerFast
 import torch
 
 
-class DTDataset(Dataset):
+class DTDataset(Dataset[Dict[str, torch.Tensor]]):
     """
     A torch dataset of synthetic data
     """
@@ -38,7 +38,7 @@ class DTDataset(Dataset):
         return {"input_ids": tokenized_input_sample.input_ids[0],
                 "attention_mask": tokenized_input_sample.attention_mask[0]}
 
-    def collate(self, batch) -> Dict[str, torch.Tensor]:
+    def collate(self, batch: List[Any]) -> Dict[str, Union[List[Any], torch.Tensor]]:
         """
         Takes a batch of tokenized samples, pads them so they have the same length, and  returns a dictionary of
         input_ids (tokenized ids), attention_mask (tokenized mask), and labels, which can be used for supervised
@@ -49,8 +49,8 @@ class DTDataset(Dataset):
         """
         ids = [b["input_ids"] for b in batch]
         mask = [b["attention_mask"] for b in batch]
-        ids = torch.nn.utils.rnn.pad_sequence(ids, batch_first=True,
-                                              padding_value=self.tokenizer.pad_token_id)
-        mask = torch.nn.utils.rnn.pad_sequence(mask, batch_first=True, padding_value=0)
-        labels = ids.clone()
-        return {"input_ids": ids, "attention_mask": mask, "labels": labels}
+        ids_tensor = torch.nn.utils.rnn.pad_sequence(ids, batch_first=True,
+                                                     padding_value=self.tokenizer.pad_token_id)
+        mask_tensor = torch.nn.utils.rnn.pad_sequence(mask, batch_first=True, padding_value=0)
+        labels = ids_tensor.clone()
+        return {"input_ids": ids_tensor, "attention_mask": mask_tensor, "labels": labels}

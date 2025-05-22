@@ -2,6 +2,7 @@ from typing import Dict, Union, Tuple
 from transformers import AutoTokenizer, AutoModelForCausalLM, PreTrainedTokenizerFast, PreTrainedModel
 import torch
 
+
 class LoadLLM:
     """
     Class with utility functions to load LLM models.

@@ -9,8 +9,6 @@ if __name__ == '__main__':
                "reimage server", "collect memory dump", "notify IR lead"]
     num_episodes = 10
     time_horizon = 100
-    ACTIONS = ["isolate host", "rotate keys", "block IP",
-               "reimage server", "collect memory dump", "notify IR lead"]
     tokenizer, llm = LoadLLM.load_llm(llm_name=constants.LLM.DEEPSEEK_7B, device_map={"": 0})
     llm = LORA.setup_llm_for_fine_tuning(llm=llm)
     dataset = SyntheticDatasetGenerator.generate_synthetic_dataset(tokenizer=tokenizer, num_episodes=num_episodes,

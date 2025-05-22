@@ -18,4 +18,4 @@ class DTGenerator:
         """
         gen = tokenizer(prompt, return_tensors="pt").to(llm.device)
         out = llm.generate(**gen, max_new_tokens=20, eos_token_id=tokenizer.eos_token_id)
-        return tokenizer.decode(out[0], skip_special_tokens=True)
+        return str(tokenizer.decode(out[0], skip_special_tokens=True))
