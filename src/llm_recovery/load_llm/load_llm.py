@@ -1,5 +1,5 @@
 from typing import Dict, Union, Tuple
-from transformers import AutoTokenizer, AutoModelForCausalLM, PreTrainedTokenizerFast, PreTrainedModel
+from transformers import AutoTokenizer, AutoModelForCausalLM, PreTrainedTokenizer, PreTrainedModel
 import torch
 
 
@@ -10,7 +10,7 @@ class LoadLLM:
 
     @staticmethod
     def load_llm(llm_name: str, device_map: Union[Dict[str, int], str] = "auto") \
-            -> Tuple[PreTrainedTokenizerFast, PreTrainedModel]:
+            -> Tuple[PreTrainedTokenizer, PreTrainedModel]:
         """
         Utility function for loading a pretrained LLM from huggingface.
 
@@ -19,6 +19,6 @@ class LoadLLM:
         :return: The tokenizer and the LLM
         """
         tokenizer = AutoTokenizer.from_pretrained(llm_name, use_fast=True)
-        tokenizer.pad_token = tokenizer.eos_token  # avoid pad-token warnings
+        tokenizer.pad_token = tokenizer.eos_token
         llm = AutoModelForCausalLM.from_pretrained(llm_name, torch_dtype=torch.float16, device_map=device_map)
         return tokenizer, llm

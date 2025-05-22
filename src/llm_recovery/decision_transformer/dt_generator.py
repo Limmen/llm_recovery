@@ -1,4 +1,4 @@
-from transformers import PreTrainedModel, PreTrainedTokenizerFast
+from transformers import PreTrainedModel, PreTrainedTokenizer
 import llm_recovery.constants.constants as constants
 
 
@@ -8,7 +8,7 @@ class DTGenerator:
     """
 
     @staticmethod
-    def generate(prompt: str, llm: PreTrainedModel, tokenizer: PreTrainedTokenizerFast,
+    def generate(prompt: str, llm: PreTrainedModel, tokenizer: PreTrainedTokenizer,
                  max_new_tokens: int = 20) -> str:
         """
         Uses an LLM fine-tuned witth decision transformer to generate outputs based on a given prompt.

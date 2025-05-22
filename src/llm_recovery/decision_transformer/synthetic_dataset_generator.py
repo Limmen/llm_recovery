@@ -1,7 +1,8 @@
 from typing import List
 import random
-from transformers import PreTrainedTokenizerFast
+from transformers import PreTrainedTokenizer
 from llm_recovery.decision_transformer.dt_dataset import DTDataset
+import llm_recovery.constants.constants as constants
 
 
 class SyntheticDatasetGenerator:
@@ -25,12 +26,14 @@ class SyntheticDatasetGenerator:
         actions = [random.choice(actions) for _ in range(time_horizon)]
         seq = []
         for s, a, r in zip(states, actions, rtg):
-            seq.append(f"<state> {s} <action> {a} <rtg> {r}")
-        seq.append("<end>")
+            seq.append(f"{constants.DECISION_TRANSFORMER.OBSERVATION_OPEN_DELIMITER}{s}"
+                       f"{constants.DECISION_TRANSFORMER.ACTION_OPEN_DELIMITER}{a}"
+                       f"{constants.DECISION_TRANSFORMER.RTG_OPEN_DELIMITER}{r}")
+        seq.append({constants.DECISION_TRANSFORMER.SEQUENCE_END})
         return " ".join(seq)
 
     @staticmethod
-    def generate_synthetic_dataset(tokenizer: PreTrainedTokenizerFast, actions: List[str], num_episodes: int = 10,
+    def generate_synthetic_dataset(tokenizer: PreTrainedTokenizer, actions: List[str], num_episodes: int = 10,
                                    time_horizon: int = 100) -> DTDataset:
         """
         Generates a synthetic dataset for training a Decision Transformer

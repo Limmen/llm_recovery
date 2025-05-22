@@ -1,6 +1,6 @@
 from typing import List, Dict, Any, Union
 from torch.utils.data import Dataset
-from transformers import PreTrainedTokenizerFast
+from transformers import PreTrainedTokenizer
 import llm_recovery.constants.constants as constants
 import torch
 
@@ -10,7 +10,7 @@ class DTDataset(Dataset[Dict[str, torch.Tensor]]):
     A torch dataset of synthetic data
     """
 
-    def __init__(self, samples: List["str"], tokenizer: PreTrainedTokenizerFast):
+    def __init__(self, samples: List["str"], tokenizer: PreTrainedTokenizer):
         """
         Initializes the dataset with a given list of samples.
 
