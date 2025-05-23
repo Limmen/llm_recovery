@@ -44,6 +44,22 @@ class DECISION_TRANSFORMER:
     OBSERVATION_CLOSE_DELIMITER = "</observation>"
     ACTION_OPEN_DELIMITER = "<action>"
     ACTION_CLOSE_DELIMITER = "</action>"
-    RTG_OPEN_DELIMITER = "<rtg>"
-    RTG_CLOSE_DELIMITER = "</rtg>"
-    SEQUENCE_END = "<end>"
+    COST_TO_GO_OPEN_DELIMITER = "<cost-to-go>"
+    COST_TO_GO_CLOSE_DELIMITER = "</cost-to-go>"
+    TASK_DESCRIPTION_OPEN_DELIMITER = "<task>"
+    TASK_DESCRIPTION_CLOSE_DELIMITER = "</task>"
+    SEQUENCE_DESCRIPTION_OPEN_DELIMITER = "<sequence-description>"
+    SEQUENCE_DESCRIPTION_CLOSE_DELIMITER = "</sequence-description>"
+    ACTION_SPACE_INSTRUCTION_OPEN_DELIMITER = "<action-space>"
+    ACTION_SPACE_INSTRUCTION_CLOSE_DELIMITER = "</action-space>"
+    SYSTEM_INSTRUCTION_OPEN_DELIMITER = "<system>"
+    SYSTEM_INSTRUCTION_CLOSE_DELIMITER = "</system>"
+    SEQUENCE_START = "<sequence>"
+    SEQUENCE_END = "<sequence/>"
+    SEQUENCE_INSTRUCTION = ("The system is a partially observed discrete-time dynamical system. "
+                            "The following is a trace of observations, actions, and cost-to-go."
+                            " Your task is to continue predicting the sequence.")
+    TASK_INSTRUCTION = ("You are a security operator selecting recovery actions.")
+    SYSTEM_INSTRUCTION = ("Hosts: ")
+    ACTION_SPACE_INSTRUCTION = ("This is the list of per-host recovery actions and associated costs.")
+

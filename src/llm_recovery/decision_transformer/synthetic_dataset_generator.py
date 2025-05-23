@@ -28,7 +28,7 @@ class SyntheticDatasetGenerator:
         for s, a, r in zip(states, actions, rtg):
             seq.append(f"{constants.DECISION_TRANSFORMER.OBSERVATION_OPEN_DELIMITER}{s}"
                        f"{constants.DECISION_TRANSFORMER.ACTION_OPEN_DELIMITER}{a}"
-                       f"{constants.DECISION_TRANSFORMER.RTG_OPEN_DELIMITER}{r}")
+                       f"{constants.DECISION_TRANSFORMER.COST_TO_GO_OPEN_DELIMITER}{r}")
         seq.append(constants.DECISION_TRANSFORMER.SEQUENCE_END)
         return " ".join(seq)
 
