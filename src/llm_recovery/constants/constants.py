@@ -62,4 +62,3 @@ class DECISION_TRANSFORMER:
     TASK_INSTRUCTION = ("You are a security operator selecting recovery actions.")
     SYSTEM_INSTRUCTION = ("Hosts: ")
     ACTION_SPACE_INSTRUCTION = ("This is the list of per-host recovery actions and associated costs.")
-

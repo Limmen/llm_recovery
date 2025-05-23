@@ -8,66 +8,64 @@ import random
 import math
 
 
-class IntrusionEnv(gym.Env):
+class IntrusionEnv(gym.Env): # type: ignore
     """
     OpenAI gym environment based on attack traces from the KTH testbed
     """
 
     def __init__(self):
         super().__init__()
-        self.hosts_and_effective_recovery_actions: List[Tuple[str, List[str]]] = \
-            [
-                ("15.9.1.254,Unknown,Unknown", []),
-                ("15.9.2.79,Ubuntu14,SSH:22/FTP:21/MongoDB:27017/Teamspeak3:30033/Tomcat:8080", []),
-                ("15.9.1.191,Unknown,Unknown", []),
-                ("15.9.2.21,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.2.10,15.9.1.10,Ubuntu20,SSH:22", []),
-                ("15.9.2.78,15.9.3.78,Ubuntu20,SSH:22/DNS:53/HTTP:80", []),
-                ("15.9.2.3,15.9.4.3,Debian10.2,SSH:22/Samba:445/NTP:123/Telnet:23",
-                 ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
-                  "Block all egress traffic from host", "Drop all incoming connections",
-                  "Reconfigure firewall to block port 445", "Apply security patch for CVE-2017-7494", "Disable Samba",
-                  "Redirect traffic to honeypot"]),
-                ("15.9.6.7,Debian10.2,SSH:22/Samba:445/NTP:123",
-                 ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
-                  "Block all egress traffic from host", "Drop all incoming connections",
-                  "Reconfigure firewall to block port 445", "Apply security patch for CVE-2017-7494", "Disable Samba",
-                  "Redirect traffic to honeypot"]),
-                ("15.9.5.101,15.9.7.101,Ubuntu20,SSH:22/IRC:194/SMTP:25/NTP:123/Postgres/5432", []),
-                ("15.9.3.54,15.9.9.54,Wheezy,SSH:22/HTTP:80/SNMP:161", []),
-                ("15.9.4.74 15.9.5.74,Debian10.2,SSH:22/HTTP:80/IRC:194",
-                 ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
-                  "Block all egress traffic from host", "Drop all incoming connections",
-                  "Reconfigure firewall to block port 80", "Disable HTTP",
-                  "Redirect traffic to honeypot"]),
-                ("15.9.4.61,15.9.8.61,Debian10.2,SSH:22/Teamspeak3:30033/Tomcat:8080", []),
-                ("15.9.5.62,15.9.6.62,Debian10.2,SSH:22/Elasticsearch:9200/SNMP:161",
-                 ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
-                  "Block all egress traffic from host", "Drop all incoming connections",
-                  "Apply security patch for CVE-2015-1427", "Disable Elasticsearch",
-                  "Redirect traffic to honeypot"]
-                 ),
-                ("15.9.2.4,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.2.5,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.2.6,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.2.8,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.2.9,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.2.178,Debian10.2,SSH:22/PROFTPD:21/SNMP:161", []),
-                ("15.9.9.11,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.9.12,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.9.13,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.9.14,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.7.15,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.7.16,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.7.17,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.7.18,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.8.19,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.8.20,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.8.22,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.8.23,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.8.24,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
-                ("15.9.8.25,Debian10.2,SSH:22", [])
-            ]
+        self.hosts_and_effective_recovery_actions: List[Tuple[str, List[str]]] = [
+            ("15.9.1.254,Unknown,Unknown", []),
+            ("15.9.2.79,Ubuntu14,SSH:22/FTP:21/MongoDB:27017/Teamspeak3:30033/Tomcat:8080", []),
+            ("15.9.1.191,Unknown,Unknown", []),
+            ("15.9.2.21,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.2.10,15.9.1.10,Ubuntu20,SSH:22", []),
+            ("15.9.2.78,15.9.3.78,Ubuntu20,SSH:22/DNS:53/HTTP:80", []),
+            ("15.9.2.3,15.9.4.3,Debian10.2,SSH:22/Samba:445/NTP:123/Telnet:23",
+             ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
+              "Block all egress traffic from host", "Drop all incoming connections",
+              "Reconfigure firewall to block port 445", "Apply security patch for CVE-2017-7494", "Disable Samba",
+              "Redirect traffic to honeypot"]),
+            ("15.9.6.7,Debian10.2,SSH:22/Samba:445/NTP:123",
+             ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
+              "Block all egress traffic from host", "Drop all incoming connections",
+              "Reconfigure firewall to block port 445", "Apply security patch for CVE-2017-7494", "Disable Samba",
+              "Redirect traffic to honeypot"]),
+            ("15.9.5.101,15.9.7.101,Ubuntu20,SSH:22/IRC:194/SMTP:25/NTP:123/Postgres/5432", []),
+            ("15.9.3.54,15.9.9.54,Wheezy,SSH:22/HTTP:80/SNMP:161", []),
+            ("15.9.4.74 15.9.5.74,Debian10.2,SSH:22/HTTP:80/IRC:194",
+             ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
+              "Block all egress traffic from host", "Drop all incoming connections",
+              "Reconfigure firewall to block port 80", "Disable HTTP",
+              "Redirect traffic to honeypot"]),
+            ("15.9.4.61,15.9.8.61,Debian10.2,SSH:22/Teamspeak3:30033/Tomcat:8080", []),
+            ("15.9.5.62,15.9.6.62,Debian10.2,SSH:22/Elasticsearch:9200/SNMP:161",
+             ["Kill all processes", "Wipe and re-image the host", "Isolate host from the network",
+              "Block all egress traffic from host", "Drop all incoming connections",
+              "Apply security patch for CVE-2015-1427", "Disable Elasticsearch",
+              "Redirect traffic to honeypot"]),
+            ("15.9.2.4,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.2.5,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.2.6,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.2.8,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.2.9,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.2.178,Debian10.2,SSH:22/PROFTPD:21/SNMP:161", []),
+            ("15.9.9.11,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.9.12,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.9.13,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.9.14,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.7.15,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.7.16,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.7.17,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.7.18,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.8.19,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.8.20,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.8.22,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.8.23,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.8.24,Ubuntu20,SSH:22/SNMP:161/Postgres:5432/SMTP:25/NTP:123", []),
+            ("15.9.8.25,Debian10.2,SSH:22", [])
+        ]
 
         self.recovery_actions_and_costs = [
             ("Wait", 0),
@@ -150,8 +148,8 @@ class IntrusionEnv(gym.Env):
         self.t = 0
         self.state = [0] * len(self.hosts)
 
-    def step(self, action: int, llm: str = False) \
-            -> Tuple[Union[npt.NDArray[Any], str], float, bool, bool, Dict[str, Any]]:
+    def step(self, action: int, llm: bool = False) \
+            -> Tuple[Union[npt.NDArray[Any], str], float, bool, bool, Dict[str, Any]]: # type: ignore
         (host_id, recovery_action_id) = self.action_id_to_host_and_recovery_id[action]
         recovery_action = self.recovery_actions[recovery_action_id]
         recovery_action_cost = self.recovery_costs[recovery_action_id]
@@ -185,7 +183,7 @@ class IntrusionEnv(gym.Env):
                 alerts_74 = m.snort_ids_ip_alert_counters.total_alerts
             if m.ips[0] == "15.9.5.62":
                 alerts_62 = m.snort_ids_ip_alert_counters.total_alerts
-        o_prime = np.array([alerts, alerts_3, alerts_7, alerts_74, alerts_62])
+        o_prime: Union[npt.NDArray[Any], str] = np.array([alerts, alerts_3, alerts_7, alerts_74, alerts_62])
         if llm:
             o_prime = f"alerts on all/.3/.7/.74/.62:{alerts}/{alerts_3}/{alerts_7}/{alerts_74}/{alerts_62}"
         self.t += 1

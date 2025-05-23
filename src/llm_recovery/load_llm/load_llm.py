@@ -9,7 +9,7 @@ class LoadLLM:
     """
 
     @staticmethod
-    def load_llm(llm_name: str, device_map: Union[Dict[str, str], str] = "auto") \
+    def load_llm(llm_name: str, device_map: Union[Dict[str, int], str] = "auto") \
             -> Tuple[PreTrainedTokenizer, PreTrainedModel]:
         """
         Utility function for loading a pretrained LLM from huggingface.
