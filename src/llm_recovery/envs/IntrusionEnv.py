@@ -13,8 +13,9 @@ class IntrusionEnv(gym.Env): # type: ignore
     OpenAI gym environment based on attack traces from the KTH testbed
     """
 
-    def __init__(self):
+    def __init__(self, costs: bool =  True):
         super().__init__()
+        self.costs = costs
         self.hosts_and_effective_recovery_actions: List[Tuple[str, List[str]]] = [
             ("15.9.1.254,Unknown,Unknown", []),
             ("15.9.2.79,Ubuntu14,SSH:22/FTP:21/MongoDB:27017/Teamspeak3:30033/Tomcat:8080", []),
@@ -128,12 +129,14 @@ class IntrusionEnv(gym.Env): # type: ignore
         self.effective_recovery_actions: List[List[str]] = [list(x[1]) for x in
                                                             self.hosts_and_effective_recovery_actions]
         self.action_id_to_host_and_recovery_id = {}
+        self.host_and_recovery_id_to_action_id = {}
         self.actions = []
         action = 0
         for i in range(len(self.hosts)):
             for j in range(len(self.recovery_actions)):
                 self.actions.append(action)
                 self.action_id_to_host_and_recovery_id[action] = (i, j)
+                self.host_and_recovery_id_to_action_id[(i, j)] = action
                 action += 1
         self.action_space = spaces.Discrete(len(self.actions))
         self.observation_space = spaces.Box(
@@ -153,6 +156,8 @@ class IntrusionEnv(gym.Env): # type: ignore
         (host_id, recovery_action_id) = self.action_id_to_host_and_recovery_id[action]
         recovery_action = self.recovery_actions[recovery_action_id]
         recovery_action_cost = self.recovery_costs[recovery_action_id]
+        if self.recovery_actions[recovery_action_id] in self.effective_recovery_actions[host_id]:
+            self.state[host_id] = 0
         if recovery_action in self.effective_recovery_actions[host_id]:
             self.state[host_id] = 0
         if self.attack_state != -1 and self.attack_state <= 15:
@@ -185,19 +190,22 @@ class IntrusionEnv(gym.Env): # type: ignore
                 alerts_62 = m.snort_ids_ip_alert_counters.total_alerts
         o_prime: Union[npt.NDArray[Any], str] = np.array([alerts, alerts_3, alerts_7, alerts_74, alerts_62])
         if llm:
-            o_prime = f"alerts on all/.3/.7/.74/.62:{alerts}/{alerts_3}/{alerts_7}/{alerts_74}/{alerts_62}"
+            # o_prime = f"alerts all/.3/.7/.74/.62:{alerts}/{alerts_3}/{alerts_7}/{alerts_74}/{alerts_62}"
+            o_prime = f"security alerts:{alerts},time:{self.t}"
         self.t += 1
         d = False
         if self.t >= len(self.trace.defender_actions):
             d = True
         info: Dict[str, Any] = {}
+        if not self.costs:
+            cost = -cost
         return o_prime, cost, d, d, info
 
     def reset(self, seed: Union[int, None] = None, options: Union[Dict[str, Any], None] = None) \
             -> Tuple[npt.NDArray[Any], Dict[str, Any]]:
         self.trace = self.traces[random.randint(0, len(self.traces) - 1)]
         self.t = 0
-        self.attack_state = 0
+        self.attack_state = -1
         self.state = [0] * len(self.hosts)
         o = np.array([0, 0, 0, 0, 0])
         info: Dict[str, Any] = {}

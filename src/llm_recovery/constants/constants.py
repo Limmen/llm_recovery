@@ -32,6 +32,7 @@ class LORA:
     String constants related to LORA
     """
     SAVE_STRATEGY_NO = "no"
+    SAVE_STRATEGY_STEPS = "steps"
 
 
 class DECISION_TRANSFORMER:
@@ -40,25 +41,22 @@ class DECISION_TRANSFORMER:
     """
     STATE_OPEN_DELIMITER = "<state>"
     STATE_CLOSE_DELIMITER = "</state>"
-    OBSERVATION_OPEN_DELIMITER = "<observation>"
-    OBSERVATION_CLOSE_DELIMITER = "</observation>"
+    OBSERVATION_OPEN_DELIMITER = "<obs>"
+    OBSERVATION_CLOSE_DELIMITER = "</obs>"
     ACTION_OPEN_DELIMITER = "<action>"
     ACTION_CLOSE_DELIMITER = "</action>"
     COST_TO_GO_OPEN_DELIMITER = "<cost-to-go>"
-    COST_TO_GO_CLOSE_DELIMITER = "</cost-to-go>"
+    COST_TO_GO_CLOSE_DELIMITER = "</cost-tog-go>"
     TASK_DESCRIPTION_OPEN_DELIMITER = "<task>"
     TASK_DESCRIPTION_CLOSE_DELIMITER = "</task>"
-    SEQUENCE_DESCRIPTION_OPEN_DELIMITER = "<sequence-description>"
-    SEQUENCE_DESCRIPTION_CLOSE_DELIMITER = "</sequence-description>"
+    SEQUENCE_DESCRIPTION_OPEN_DELIMITER = " "
     ACTION_SPACE_INSTRUCTION_OPEN_DELIMITER = "<action-space>"
     ACTION_SPACE_INSTRUCTION_CLOSE_DELIMITER = "</action-space>"
     SYSTEM_INSTRUCTION_OPEN_DELIMITER = "<system>"
     SYSTEM_INSTRUCTION_CLOSE_DELIMITER = "</system>"
-    SEQUENCE_START = "<sequence>"
-    SEQUENCE_END = "<sequence/>"
-    SEQUENCE_INSTRUCTION = ("The system is a partially observed discrete-time dynamical system. "
-                            "The following is a trace of observations, actions, and cost-to-go."
-                            " Your task is to continue predicting the sequence.")
-    TASK_INSTRUCTION = ("You are a security operator selecting recovery actions.")
-    SYSTEM_INSTRUCTION = ("Hosts: ")
-    ACTION_SPACE_INSTRUCTION = ("This is the list of per-host recovery actions and associated costs.")
+    SEQUENCE_START = "<history>"
+    SEQUENCE_END = "</history>"
+    SEQUENCE_INSTRUCTION = ("The system can be modeled as a POMDP. The following is a POMDP history. Continue it")
+    TASK_INSTRUCTION = ("You are a security operator selecting recovery actions for a system.")
+    SYSTEM_INSTRUCTION = ("These are the system's hosts:")
+    ACTION_SPACE_INSTRUCTION = ("List of per-host recovery actions and their costs:")

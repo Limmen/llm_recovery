@@ -30,9 +30,10 @@ class LORA:
     def supervised_fine_tuning(llm: PreTrainedModel, dataset: DTDataset, output_dir: str = "ds-dt-lora",
                                learning_rate: float = 5e-5, logging_steps: int = 1,
                                per_device_train_batch_size: int = 1, num_train_epochs: int = 3,
-                               prompt_logging: bool = False, prompt: str = "", max_generation_tokens: int = 32,
+                               prompt_logging: bool = False, prompt: str = "", full_sequence: str = "",
+                               max_generation_tokens: int = 32,
                                running_average_window: int = 100, prompt_logging_frequency: int = 1,
-                               temperature: float = 0.7) -> None:
+                               temperature: float = 0.7, save_steps: int = 100, save_limit: int = 2) -> None:
         """
         Performs supervised fine-tuning of a given llm based on a given dataset
 
@@ -44,22 +45,29 @@ class LORA:
         :param per_device_train_batch_size: The number of samples to use per device for fine-tuning
         :param prompt_logging: Boolean flag indicating whether to log test-prompts during training
         :param prompt: The prompt to use for prompt logging
+        :param full_sequence: The full sequence to predict for prompt logging
         :param max_generation_tokens: The maximum number of tokens to generate for prompt logging
         :param running_average_window: length of the window to compute running averages
         :param prompt_logging_frequency: frequency of prompt logging
         :param temperature: controls the randomness of the LLM outputs
+        :param save_steps: controls how frequently to checkpoint the model
+        :param save_limit: controls the maximum number of saved copies of the model
         :return: None
         """
         gen_kwargs = dict(max_new_tokens=max_generation_tokens, temperature=temperature, do_sample=True)
         args = TrainingArguments(
             output_dir=output_dir, bf16=True,
             per_device_train_batch_size=per_device_train_batch_size, num_train_epochs=num_train_epochs,
-            learning_rate=learning_rate, logging_steps=logging_steps, save_strategy=constants.LORA.SAVE_STRATEGY_NO)
+            learning_rate=learning_rate, logging_steps=logging_steps,
+            save_strategy=constants.LORA.SAVE_STRATEGY_STEPS, save_steps=save_steps,
+            save_total_limit=save_limit)
         callback = LoggingCallback(prompt=prompt, tokenizer=dataset.tokenizer, window=running_average_window,
                                    gen_kwargs=gen_kwargs, dataset=dataset,
-                                   prompt_logging=prompt_logging, prompt_logging_frequency=prompt_logging_frequency)
+                                   prompt_logging=prompt_logging, prompt_logging_frequency=prompt_logging_frequency,
+                                   full_sequence=full_sequence)
         trainer = Trainer(model=llm, args=args, train_dataset=dataset, data_collator=dataset.collate,
                           callbacks=[callback])
         trainer.remove_callback(PrinterCallback)
         trainer.remove_callback(ProgressCallback)
         trainer.train()
+        trainer.save_model(output_dir=output_dir)

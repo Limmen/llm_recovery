@@ -12,13 +12,14 @@ class LoggingCallback(TrainerCallback):
     Callback for logging during LORA  training.
     """
 
-    def __init__(self, prompt: str, tokenizer: PreTrainedTokenizer, dataset: DTDataset,
+    def __init__(self, prompt: str, full_sequence: str, tokenizer: PreTrainedTokenizer, dataset: DTDataset,
                  window: int = 100, gen_kwargs: Dict[str, Any] | None = None, prompt_logging: bool = False,
                  prompt_logging_frequency: int = 1) -> None:
         """
         Initializes the callback.
 
         :param prompt: the prompt to use for testing during training
+        :param full_sequence: the full sequence to predict
         :param tokenizer: the tokenizer for the LLM
         :param window: the length of the training window for computing running averages
         :param gen_kwargs: keyword arguments to use for test generation with the LLM
@@ -27,6 +28,7 @@ class LoggingCallback(TrainerCallback):
         :param prompt_logging_frequency: frequency of prompt logging
         """
         self.prompt = prompt
+        self.full_sequence = full_sequence
         self.tokenizer = tokenizer
         self.window = window
         self.dataset = dataset
@@ -78,6 +80,8 @@ class LoggingCallback(TrainerCallback):
             progress = state.global_step / state.max_steps * 100
             print(f"Step: {state.global_step}, Progress: {round(progress, 2)}%, Avg_loss={rolling_loss:.4f}, "
                   f"LR={lr:.8f}, "
-                  f"Grad_norm={gn:.4f}, sample: {model_output}", flush=True)
+                  f"Grad_norm={gn:.4f}, \npredi:{model_output[len(self.prompt):]}\n"
+                  f"truth:{self.full_sequence[len(self.prompt):min(len(self.full_sequence), len(model_output))]}",
+                  flush=True)
         except Exception:
             pass
