@@ -1,4 +1,4 @@
-from typing import Union, List
+from typing import Union, List, Optional
 from transformers import PreTrainedModel, Trainer, TrainingArguments, PrinterCallback, ProgressCallback
 from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 from llm_recovery.decision_transformer.dt_dataset import DTDataset
@@ -43,8 +43,8 @@ class LORA:
                                output_dir: str = "ds-dt-lora",
                                learning_rate: float = 5e-5, logging_steps: int = 1,
                                per_device_train_batch_size: int = 1, num_train_epochs: int = 3,
-                               prompt_logging: bool = False, prompts: List[str] = None,
-                               answers: List[str] = None,
+                               prompt_logging: bool = False, prompts: Optional[List[str]] = None,
+                               answers: Optional[List[str]] = None,
                                max_generation_tokens: int = 32,
                                running_average_window: int = 100, prompt_logging_frequency: int = 1,
                                temperature: float = 0.7, save_steps: int = 100, save_limit: int = 2,
@@ -74,6 +74,10 @@ class LORA:
         :param seed: the random seed for reproducibility
         :return: None
         """
+        if prompts is None:
+            prompts = []
+        if answers is None:
+            answers = []
         gen_kwargs = dict(max_new_tokens=max_generation_tokens, temperature=temperature, do_sample=True)
         args = TrainingArguments(
             output_dir=output_dir, bf16=True,

@@ -38,6 +38,11 @@ class GPU:
     DISTRIBUTED = "distributed"
     SDPA = "sdpa"
     NF4 = "nf4"
+    AUTO = "auto"
+    MODEL_EMBED_TOKENS = "model.embed_tokens"
+    MODEL_NORM = "model.norm"
+    LM_HEAD = "lm_head"
+    MODEL_LAYERS = "model.layers"
 
 
 class LORA:

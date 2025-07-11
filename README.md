@@ -1,4 +1,4 @@
-# Attack Recovery for Networked Systems through In-Context Learning with a Foundation Model
+# Decision-Theoretic Incident Response Planning with a Lightweight Large Language Model
 
 A decision-support system powered by a foundation model for recovering from cyberattacks in networked systems.
 

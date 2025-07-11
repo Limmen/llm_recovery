@@ -11,8 +11,8 @@ class LoadLLM:
     """
 
     @staticmethod
-    def load_llm(llm_name: str, device_map: Union[Dict[str, int], str] = "auto", num_gpus: int = 1,
-                 use_quantization: bool = True) \
+    def load_llm(llm_name: str, device_map: Union[Dict[str, int], str] = constants.GPU.AUTO,
+                 num_gpus: int = 1, use_quantization: bool = True) \
             -> Tuple[PreTrainedTokenizer, PreTrainedModel]:
         """
         Utility function for loading a pretrained LLM from huggingface.
@@ -67,10 +67,11 @@ class LoadLLM:
 
         assert sum(layers_each) == num_layers
 
-        device_map = {"model.embed_tokens": 0, "model.norm": 0, "lm_head": 0}
+        device_map = {constants.GPU.MODEL_EMBED_TOKENS: 0, constants.GPU.MODEL_NORM: 0,
+                      constants.GPU.LM_HEAD: 0}
         layer_idx = 0
         for gpu, n in enumerate(layers_each):
             for _ in range(n):
-                device_map[f"model.layers.{layer_idx}"] = gpu
+                device_map[f"{constants.GPU.MODEL_LAYERS}.{layer_idx}"] = gpu
                 layer_idx += 1
         return device_map

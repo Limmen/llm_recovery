@@ -1,4 +1,4 @@
-from typing import Dict, Any, Deque, List
+from typing import Dict, Any, Deque, List, Union
 import random
 import torch
 from collections import deque
@@ -6,6 +6,8 @@ from transformers import (TrainerCallback, TrainerControl, TrainerState, Trainin
                           PreTrainedTokenizer)
 import llm_recovery.constants.constants as constants
 from llm_recovery.decision_transformer.dt_dataset import DTDataset
+from llm_recovery.fine_tuning.examples_dataset import ExamplesDataset
+from llm_recovery.fine_tuning.post_think_dataset import PostThinkDataset
 import time
 import json
 
@@ -15,7 +17,8 @@ class LoggingCallback(TrainerCallback):
     Callback for logging during LORA  training.
     """
 
-    def __init__(self, prompts: List[str], answers: List[str], tokenizer: PreTrainedTokenizer, dataset: DTDataset,
+    def __init__(self, prompts: List[str], answers: List[str], tokenizer: PreTrainedTokenizer,
+                 dataset: Union[DTDataset, ExamplesDataset, PostThinkDataset],
                  window: int = 100, gen_kwargs: Dict[str, Any] | None = None, prompt_logging: bool = False,
                  prompt_logging_frequency: int = 1, progress_save_frequency: int = 1, seed: int = 29015) -> None:
         """
@@ -41,14 +44,14 @@ class LoggingCallback(TrainerCallback):
         self.losses: Deque[float] = deque(maxlen=window)
         self.gen_kwargs = gen_kwargs or {constants.GENERAL.MAX_NEW_TOKENS: 64}
         self.prompt_logging_frequency = prompt_logging_frequency
-        self.avg_losses_logging = []
-        self.losses_logging = []
-        self.grad_norms = []
-        self.learning_rates = []
-        self.epochs = []
-        self.start_time = time.time()
-        self.times_passed = []
-        self.steps = []
+        self.avg_losses_logging: List[float] = []
+        self.losses_logging: List[float] = []
+        self.grad_norms: List[float] = []
+        self.learning_rates: List[float] = []
+        self.epochs: List[int] = []
+        self.start_time: float = time.time()
+        self.times_passed: List[float] = []
+        self.steps: List[int] = []
         self.progress_save_frequency = progress_save_frequency
         self.seed = seed
 
