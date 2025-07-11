@@ -34,7 +34,6 @@ class DTDataset(Dataset[Dict[str, torch.Tensor]]):
         :return: a dictionary with input ids (the token ids and an attention mask)
         """
         sample = self.samples[i]
-        # Get token ids as PyTorch tensors (pt) with the attention masks.
         tokenized_input_sample = self.tokenizer(sample, return_tensors=constants.GENERAL.PYTORCH)
         return {constants.GENERAL.INPUT_IDS: tokenized_input_sample.input_ids[0],
                 constants.GENERAL.ATTENTION_MASK: tokenized_input_sample.attention_mask[0]}

@@ -11,7 +11,7 @@ class DTGenerator:
     def generate(prompt: str, llm: PreTrainedModel, tokenizer: PreTrainedTokenizer,
                  max_new_tokens: int = 20) -> str:
         """
-        Uses an LLM fine-tuned witth decision transformer to generate outputs based on a given prompt.
+        Uses an LLM fine-tuned with decision transformer to generate outputs based on a given prompt.
 
         :param prompt: the prompt
         :param llm: the fine-tuned LLM
@@ -20,5 +20,6 @@ class DTGenerator:
         :return: the output of the fine-tuned LLM
         """
         gen = tokenizer(prompt, return_tensors=constants.GENERAL.PYTORCH).to(llm.device)
-        out = llm.generate(**gen, max_new_tokens=max_new_tokens, eos_token_id=tokenizer.eos_token_id)
+        out = llm.generate(**gen, max_new_tokens=max_new_tokens, eos_token_id=tokenizer.eos_token_id,
+                           pad_token_id=tokenizer.eos_token_id)
         return str(tokenizer.decode(out[0], skip_special_tokens=True))

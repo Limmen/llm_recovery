@@ -8,6 +8,8 @@ A decision-support system powered by a foundation model for recovering from cybe
 - `torch`
 - `transformers`
 - `peft`
+- `bitsandbytes`
+- `accelerate`
 
 ## Development Requirements
 
