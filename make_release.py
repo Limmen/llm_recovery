@@ -3,14 +3,6 @@ import io
 import subprocess
 
 if __name__ == '__main__':
-    current_version = "0.0.1"
-    new_version = "0.0.1"
-    with io.open(f"src/llm_recovery/__version__.py", 'r', encoding='utf-8') as f:
-        version_file_contents = f.read()
-    with io.open(f"src/llm_recovery/__version__.py", 'w', encoding='utf-8') as f:
-        version_file_contents = version_file_contents.replace(current_version, new_version)
-        f.write(version_file_contents + "\n")
-
     # Delete old build directories
     print("Delete old build directories")
     shutil.rmtree(f"dist", ignore_errors=True)
