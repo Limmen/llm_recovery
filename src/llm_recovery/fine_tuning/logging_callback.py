@@ -1,4 +1,4 @@
-from typing import Dict, Any, Deque, List, Union
+from typing import Dict, Any, Deque, List, Union, Optional
 import random
 import torch
 from collections import deque
@@ -19,7 +19,7 @@ class LoggingCallback(TrainerCallback):
 
     def __init__(self, prompts: List[str], answers: List[str], tokenizer: PreTrainedTokenizer,
                  dataset: Union[DTDataset, ExamplesDataset, PostThinkDataset],
-                 window: int = 100, gen_kwargs: Dict[str, Any] | None = None, prompt_logging: bool = False,
+                 window: int = 100, gen_kwargs: Optional[Dict[str, Any]] = None, prompt_logging: bool = False,
                  prompt_logging_frequency: int = 1, progress_save_frequency: int = 1, seed: int = 29015) -> None:
         """
         Initializes the callback.
