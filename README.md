@@ -6,10 +6,13 @@ A decision-support system powered by a foundation model for recovering from cybe
 
 - Python 3.8+
 - `torch`
+- `torchvision`
+- `numpy`
 - `transformers`
 - `peft`
 - `bitsandbytes`
 - `accelerate`
+- `hf-transfer`
 
 ## Development Requirements
 
