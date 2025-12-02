@@ -1,5 +1,4 @@
 import shutil
-import io
 import subprocess
 
 if __name__ == '__main__':
