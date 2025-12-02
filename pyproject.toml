@@ -19,13 +19,13 @@ classifiers = [
     "Intended Audience :: Science/Research"
 ]
 dependencies = [
-    "torch>=2.2.0",
-    "transformers>=4.52.1",
-    "peft>=0.15.2",
-    "bitsandbytes>=0.42.0",
-    "accelerate>=1.7.0",
-    "datasets>=4.3.0",
-    "numpy>=1.26,<2"
+    "torch==2.2.0",
+    "transformers==4.52.1",
+    "peft==0.15.2",
+    "bitsandbytes==0.42.0",
+    "accelerate==1.7.0",
+    "datasets==4.3.0",
+    "numpy==1.26,<2"
 ]
 
 [project.optional-dependencies]
